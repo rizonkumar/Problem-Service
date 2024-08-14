@@ -1,0 +1,16 @@
+{
+  "name": "problem-service",
+  "version": "1.0.0",
+  "description": "This is an Admin Service to Manage Problems of the Leetcode like Platform",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Problem",
+    "Service",
+    "leetcode"
+  ],
+  "author": "Rizon Kumar Rahi",
+  "license": "ISC"
+}
