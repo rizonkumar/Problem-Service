@@ -4,7 +4,8 @@
   "description": "This is an Admin Service to Manage Problems of the Leetcode like Platform",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "npx nodemon src/index.js"
   },
   "keywords": [
     "Problem",
@@ -12,5 +13,11 @@
     "leetcode"
   ],
   "author": "Rizon Kumar Rahi",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "nodemon": "^3.1.4"
+  }
 }
