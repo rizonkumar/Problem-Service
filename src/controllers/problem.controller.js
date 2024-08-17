@@ -33,9 +33,9 @@ function getProblem(req, res, next) {
   }
 }
 
-function getProblems(req, res, next) {
+async function getProblems(req, res, next) {
   try {
-    throw new NotImplemented("getProblems");
+    const response = await problemService.getAllProblems();
   } catch (error) {
     next(error);
   }
