@@ -48,6 +48,18 @@ class ProblemService {
       console.error(e);
     }
   }
+
+  async updateProblem(problemId, problemData) {
+    try {
+      const problem = await this.problemRepository.updateProblem(
+        problemId,
+        problemData,
+      );
+      return problem;
+    } catch (e) {
+      console.error(e);
+    }
+  }
 }
 
 module.exports = ProblemService;
