@@ -3,12 +3,17 @@ const { ATLAS_DB_URL, NODE_ENV } = require("./server.config");
 
 async function connectToDB() {
   try {
-    if (NODE_ENV === "developement") {
-      await mongoose.connect(ATLAS_DB_URL);
+    console.log("Attempting to connect to MongoDB...");
+    if (NODE_ENV === "development") {
+      await mongoose.connect(ATLAS_DB_URL, {
+        serverSelectionTimeoutMS: 30000,
+        socketTimeoutMS: 45000,
+      });
+      console.log("Successfully connected to MongoDB");
     }
   } catch (error) {
     console.error("Unable to connect to the DB server");
-    console.error(error);
+    console.error("Error details:", error);
   }
 }
 
