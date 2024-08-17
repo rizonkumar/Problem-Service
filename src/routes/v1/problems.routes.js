@@ -13,6 +13,6 @@ problemRouter.post("/", problemController.addProblem);
 
 problemRouter.delete("/:id", problemController.deleteProblem);
 
-problemRouter.put("/", problemController.updateProblem);
+problemRouter.patch("/:id", problemController.updateProblem);
 
 module.exports = problemRouter;
