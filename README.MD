@@ -1,83 +1,113 @@
-# Problem Service
 
-This is a backend service for managing coding problems, similar to LeetCode.
+```markdown
+# ProblemService API
 
-## Project Structure
+ProblemService is a RESTful API for managing coding problems. It provides endpoints for creating, reading, updating, and deleting problem entries, as well as a health check endpoint.
+
+## Table of Contents
+
+1. [Features](#features)
+2. [Prerequisites](#prerequisites)
+3. [Installation](#installation)
+4. [Configuration](#configuration)
+5. [Running the Application](#running-the-application)
+6. [API Endpoints](#api-endpoints)
+7. [Testing](#testing)
+8. [Error Handling](#error-handling)
+9. [Contributing](#contributing)
+10. [License](#license)
+
+## Features
+
+- Create new coding problems
+- Retrieve a list of all problems
+- Retrieve a specific problem by ID
+- Update existing problems
+- Delete problems
+- Health check endpoint
+
+## Prerequisites
+
+- Node.js (v14.0.0 or higher)
+- npm (v6.0.0 or higher)
+- MongoDB (v4.0 or higher)
+
+## Installation
+
+1. Clone the repository:
+   ```
+git clone https://github.com/yourusername/problem-service.git
+cd problem-service
+   ```
+
+2. Install dependencies:
+   ```
+npm install
+   ```
+
+## Configuration
+
+1. Create a `.env` file in the root directory with the following content:
+   ```
+PORT=3000
+MONGODB_URI=mongodb://localhost:27017/problem_service
+NODE_ENV=development
+   ```
+
+2. Adjust the values as needed for your environment.
+
+## Running the Application
+
+To start the server in development mode:
 
 ```
-
-Problem Service
-├── src
-│ ├── config
-│ │ └── server.config.js
-│ ├── controllers
-│ │ └── problem.controller.js
-│ ├── repositories
-│ ├── routes
-│ │ ├── index.js
-│ │ ├── v1
-│ │ │ ├── index.js
-│ │ │ └── problems.routes.js
-│ ├── services
-│ ├── utils
-│ └── index.js
-├── .env
-├── .gitignore
-├── package.json
-├── package-lock.json
-└── README.md
-
+npm run dev
 ```
 
-## Setup
+For production:
 
-1. Clone the repository
-2. Run `npm install` to install dependencies
-3. Create a `.env` file and set the `PORT` variable
-4. Run `npm start` to start the server
+```
+npm start
+```
+
+The server will start running on `http://localhost:3000` (or the port specified in your `.env` file).
 
 ## API Endpoints
 
-The base URL for all API endpoints is `/api/v1/problem`.
+All endpoints are prefixed with `/api/v1`.
 
-- `GET /ping`: Check if the problem controller is up
-- `GET /:id`: Get a specific problem by ID
-- `GET /`: Get all problems
-- `POST /`: Add a new problem
-- `DELETE /`: Delete a problem
-- `PUT /`: Update a problem
+- `GET /problem/health`: Health check
+- `POST /problem`: Create a new problem
+- `GET /problem`: Get all problems
+- `GET /problem/:id`: Get a specific problem
+- `PATCH /problem/:id`: Update a problem
+- `DELETE /problem/:id`: Delete a problem
 
-## Request Flow
+For detailed API documentation, refer to the [API Documentation](API_DOCUMENTATION.md) file.
 
-The request flow follows this pattern:
+## Testing
 
-1. The main Express app (`src/index.js`)
-2. API Router (`src/routes/index.js`)
-3. V1 Router (`src/routes/v1/index.js`)
-4. Problem Router (`src/routes/v1/problems.routes.js`)
-5. Problem Controller (`src/controllers/problem.controller.js`)
+To run tests:
 
-For example, a request to `GET /api/v1/problem/ping` would flow through:
+```
+npm test
+```
 
-apiRouter -> v1Router -> problemRouter -> problemController.pingProblemController
+## Error Handling
 
-## To-Do
-
-- Implement MongoDB connection
-- Complete controller functions
-- Add input validation
-- Implement error handling
-- Add authentication and authorization
-- Implement code execution and judging system
+The API uses custom error classes and a centralized error handling middleware. Refer to the `errors/` directory for more information on specific error types.
 
 ## Contributing
 
-Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests.
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
-
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
 ```
 
-```
+

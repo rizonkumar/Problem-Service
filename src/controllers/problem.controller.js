@@ -1,52 +1,67 @@
-const NotImplemented = require("../errors/notImplemented.error");
+const { StatusCodes } = require("http-status-codes");
 const { ProblemService } = require("../services");
 const { ProblemRepository } = require("../repositories");
-const { StatusCodes } = require("http-status-codes");
+const NotFoundError = require("../errors/not_found.error");
+const BadRequestError = require("../errors/badrequest.error");
 
 const problemService = new ProblemService(new ProblemRepository());
 
-function pingProblemController(req, res) {
-  return res.json({ message: "Ping controller is active" });
+async function healthCheck(req, res) {
+  console.log("Check");
+  res
+    .status(StatusCodes.OK)
+    .json({ status: "healthy", message: "Problem controller is operational" });
 }
 
 async function addProblem(req, res, next) {
   try {
-    console.log("Incoming req body", req.body);
-
     const newProblem = await problemService.createProblem(req.body);
-    return res.status(StatusCodes.CREATED).json({
+    res.status(StatusCodes.CREATED).json({
       success: true,
       message: "Successfully created a new problem",
-      error: {},
       data: newProblem,
     });
   } catch (error) {
-    next(error);
+    if (error instanceof BadRequestError) {
+      res.status(StatusCodes.BAD_REQUEST).json({
+        success: false,
+        message: "Failed to create problem",
+        error: error.message,
+      });
+    } else {
+      next(error);
+    }
   }
 }
 
 async function getProblem(req, res, next) {
   try {
     const problem = await problemService.getProblem(req.params.id);
-    return res.status(StatusCodes.OK).json({
+    res.status(StatusCodes.OK).json({
       success: true,
-      error: {},
       message: "Successfully fetched problem",
       data: problem,
     });
   } catch (error) {
-    next(error);
+    if (error instanceof NotFoundError) {
+      res.status(StatusCodes.NOT_FOUND).json({
+        success: false,
+        message: "Problem not found",
+        error: error.message,
+      });
+    } else {
+      next(error);
+    }
   }
 }
 
 async function getProblems(req, res, next) {
   try {
-    const response = await problemService.getAllProblems();
-    return res.status(StatusCodes.OK).json({
+    const problems = await problemService.getAllProblems();
+    res.status(StatusCodes.OK).json({
       success: true,
-      message: "Successfully get problems",
-      error: {},
-      data: response,
+      message: "Successfully fetched all problems",
+      data: problems,
     });
   } catch (error) {
     next(error);
@@ -55,33 +70,52 @@ async function getProblems(req, res, next) {
 
 async function updateProblem(req, res, next) {
   try {
-    const updateProblem = await problemService.updateProblem(
+    const updatedProblem = await problemService.updateProblem(
       req.params.id,
       req.body,
     );
-    console.log("Updated Proble,", updateProblem);
-    return res.status(StatusCodes.OK).json({
+    res.status(StatusCodes.OK).json({
       success: true,
       message: "Successfully updated problem",
-      error: {},
-      data: updateProblem,
+      data: updatedProblem,
     });
   } catch (error) {
-    next(error);
+    if (error instanceof NotFoundError) {
+      res.status(StatusCodes.NOT_FOUND).json({
+        success: false,
+        message: "Problem not found",
+        error: error.message,
+      });
+    } else if (error instanceof BadRequestError) {
+      res.status(StatusCodes.BAD_REQUEST).json({
+        success: false,
+        message: "Failed to update problem",
+        error: error.message,
+      });
+    } else {
+      next(error);
+    }
   }
 }
 
 async function deleteProblem(req, res, next) {
   try {
-    const problem = await problemService.deleteProblem(req.params.id);
-    return res.status(StatusCodes.OK).json({
+    const deletedProblem = await problemService.deleteProblem(req.params.id);
+    res.status(StatusCodes.OK).json({
       success: true,
-      error: {},
       message: "Successfully deleted problem",
-      data: problem,
+      data: deletedProblem,
     });
   } catch (error) {
-    next(error);
+    if (error instanceof NotFoundError) {
+      res.status(StatusCodes.NOT_FOUND).json({
+        success: false,
+        message: "Problem not found",
+        error: error.message,
+      });
+    } else {
+      next(error);
+    }
   }
 }
 
@@ -91,5 +125,5 @@ module.exports = {
   getProblems,
   deleteProblem,
   updateProblem,
-  pingProblemController,
+  healthCheck,
 };

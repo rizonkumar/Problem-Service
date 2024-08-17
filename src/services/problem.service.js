@@ -1,4 +1,5 @@
 const cleanAndSanitizeMarkdown = require("../utils/markdownSanitizer");
+const NotFoundError = require("../errors/not_found.error");
 
 class ProblemService {
   constructor(problemRepository) {
@@ -6,59 +7,46 @@ class ProblemService {
   }
 
   async createProblem(problemData) {
-    try {
-      // 1. Sanitize the markdown for description
-      problemData.description = cleanAndSanitizeMarkdown(
-        problemData.description,
-      );
-
-      console.log("Problem Data from service", problemData);
-      const problem = await this.problemRepository.createProblem(problemData);
-      console.log("Problem", problem);
-      return problem;
-    } catch (error) {
-      console.log(error);
-    }
+    problemData.description = cleanAndSanitizeMarkdown(problemData.description);
+    const newProblem = await this.problemRepository.createProblem(problemData);
+    return newProblem;
   }
 
   async getAllProblems() {
-    try {
-      const problems = await this.problemRepository.getAllProblems();
-      return problems;
-    } catch (error) {
-      console.log(error);
-      throw error;
-    }
+    return this.problemRepository.getAllProblems();
   }
 
   async getProblem(problemId) {
-    try {
-      const problem = await this.problemRepository.getProblem(problemId);
-      return problem;
-    } catch (e) {
-      console.error(e);
+    const retrievedProblem = await this.problemRepository.getProblem(problemId);
+    if (!retrievedProblem) {
+      throw new NotFoundError("Problem", problemId);
     }
+    return retrievedProblem;
   }
 
   async deleteProblem(problemId) {
-    try {
-      const problem = await this.problemRepository.deleteProblem(problemId);
-      return problem;
-    } catch (e) {
-      console.error(e);
+    const deletedProblem =
+      await this.problemRepository.deleteProblem(problemId);
+    if (!deletedProblem) {
+      throw new NotFoundError("Problem", problemId);
     }
+    return deletedProblem;
   }
 
   async updateProblem(problemId, problemData) {
-    try {
-      const problem = await this.problemRepository.updateProblem(
-        problemId,
-        problemData,
+    if (problemData.description) {
+      problemData.description = cleanAndSanitizeMarkdown(
+        problemData.description,
       );
-      return problem;
-    } catch (e) {
-      console.error(e);
     }
+    const updatedProblem = await this.problemRepository.updateProblem(
+      problemId,
+      problemData,
+    );
+    if (!updatedProblem) {
+      throw new NotFoundError("Problem", problemId);
+    }
+    return updatedProblem;
   }
 }
 
