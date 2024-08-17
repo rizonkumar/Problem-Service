@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-
+const helmet = require("helmet");
+const morgan = require("morgan");
 const { PORT } = require("./config/server.config");
 const apiRouter = require("./routes");
 const errorHandler = require("./utils/errorHandler");
@@ -8,20 +9,47 @@ const connectToDB = require("./config/db.config");
 
 const app = express();
 
+// Middleware
+app.use(helmet());
+app.use(morgan("combined"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.text());
 
+// Routes
 app.use("/api", apiRouter);
 
-app.get("/ping", (req, res) => {
-  return res.json({ message: "Problem Service is alive" });
+app.get("/health", (req, res) => {
+  res
+    .status(200)
+    .json({ status: "healthy", message: "Problem Service is operational" });
 });
 
+// Error handling
 app.use(errorHandler);
 
-app.listen(PORT, async () => {
-  console.log(`Server started at PORT : ${PORT}`);
-  await connectToDB();
-  console.log("Successfully connected to DB");
-});
+// Server startup function
+async function startServer() {
+  try {
+    await connectToDB();
+    console.log("Successfully connected to DB");
+
+    const server = app.listen(PORT, () => {
+      console.log(`Server started at PORT: ${PORT}`);
+    });
+
+    // Graceful shutdown
+    process.on("SIGTERM", () => {
+      console.log("SIGTERM signal received: closing HTTP server");
+      server.close(() => {
+        console.log("HTTP server closed");
+        process.exit(0);
+      });
+    });
+  } catch (error) {
+    console.error("Failed to start the server:", error);
+    process.exit(1);
+  }
+}
+
+startServer();
