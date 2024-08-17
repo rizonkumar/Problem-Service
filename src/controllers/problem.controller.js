@@ -61,9 +61,16 @@ function updateProblem(req, res, next) {
   }
 }
 
-function deleteProblem(req, res, next) {
+async function deleteProblem(req, res, next) {
   try {
-    throw new NotImplemented("deleteProblem");
+    const problem = await problemService.deleteProblem(req.params.id);
+    console.log("Delte controler", problem);
+    return res.status(StatusCodes.OK).json({
+      success: true,
+      error: {},
+      message: "Successfully deleted problem",
+      data: problem,
+    });
   } catch (error) {
     next(error);
   }
