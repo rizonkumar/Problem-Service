@@ -9,7 +9,7 @@ class ProblemService {
     try {
       // 1. Sanitize the markdown for description
       problemData.description = cleanAndSanitizeMarkdown(
-        problemData.description
+        problemData.description,
       );
 
       console.log("Problem Data from service", problemData);
@@ -28,6 +28,15 @@ class ProblemService {
     } catch (error) {
       console.log(error);
       throw error;
+    }
+  }
+
+  async getProblem(problemId) {
+    try {
+      const problem = await this.problemRepository.getProblem(problemId);
+      return problem;
+    } catch (e) {
+      console.error(e);
     }
   }
 }
