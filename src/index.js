@@ -6,6 +6,7 @@ const { PORT } = require("./config/server.config");
 const apiRouter = require("./routes");
 const errorHandler = require("./utils/errorHandler");
 const connectToDB = require("./config/db.config");
+const logger = require("./config/logger.config");
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.use(bodyParser.text());
 app.use("/api", apiRouter);
 
 app.get("/health", (req, res) => {
+  logger.info("Health check endpoint called");
   res
     .status(200)
     .json({ status: "healthy", message: "Problem Service is operational" });
@@ -32,22 +34,22 @@ app.use(errorHandler);
 async function startServer() {
   try {
     await connectToDB();
-    console.log("Successfully connected to DB");
+    logger.info("Successfully connected to DB");
 
     const server = app.listen(PORT, () => {
-      console.log(`Server started at PORT: ${PORT}`);
+      logger.info(`Server started at PORT: ${PORT}`);
     });
 
     // Graceful shutdown
     process.on("SIGTERM", () => {
-      console.log("SIGTERM signal received: closing HTTP server");
+      logger.info("SIGTERM signal received: closing HTTP server");
       server.close(() => {
-        console.log("HTTP server closed");
+        logger.info("HTTP server closed");
         process.exit(0);
       });
     });
   } catch (error) {
-    console.error("Failed to start the server:", error);
+    logger.error("Failed to start the server:", error);
     process.exit(1);
   }
 }

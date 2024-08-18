@@ -1,8 +1,9 @@
 const BaseError = require("../errors/base.error");
 const { StatusCodes } = require("http-status-codes");
+const logger = require("../config/logger.config");
 
 function errorHandler(err, req, res, next) {
-  console.error("Error:", err);
+  logger.error("Error caught in global error handler:", err);
 
   if (err instanceof BaseError) {
     return res.status(err.statusCode).json({
@@ -14,13 +15,19 @@ function errorHandler(err, req, res, next) {
   }
 
   // For unknown errors
-  return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+  const statusCode = err.statusCode || StatusCodes.INTERNAL_SERVER_ERROR;
+  const message =
+    process.env.NODE_ENV === "development"
+      ? "An unexpected error occurred"
+      : err.message;
+
+  return res.status(statusCode).json({
     success: false,
-    message: "An unexpected error occurred",
+    message: message,
     error:
       process.env.NODE_ENV === "development"
         ? "Internal Server Error"
-        : err.message,
+        : err.stack,
     data: null,
   });
 }
