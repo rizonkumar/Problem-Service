@@ -7,7 +7,6 @@ const BadRequestError = require("../errors/badrequest.error");
 const problemService = new ProblemService(new ProblemRepository());
 
 async function healthCheck(req, res) {
-  console.log("Check");
   res
     .status(StatusCodes.OK)
     .json({ status: "healthy", message: "Problem controller is operational" });

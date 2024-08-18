@@ -14,19 +14,13 @@ function cleanAndSanitizeMarkdown(markdownInput) {
   // 1. Convert markdown input to HTML
   const htmlFromMarkdown = marked.parse(markdownInput);
 
-  console.log("Converted HTML:", htmlFromMarkdown);
-
   // 2. Sanitize the generated HTML
   const sanitizedHtml = sanitizeHTML(htmlFromMarkdown, {
     allowedTags: sanitizeHTML.defaults.allowedTags.concat(["img"]),
   });
 
-  console.log("Sanitized HTML:", sanitizedHtml);
-
   // 3. Convert sanitized HTML back to markdown
   const sanitizedMarkdown = turndownService.turndown(sanitizedHtml);
-
-  console.log("Sanitized Markdown", sanitizedMarkdown);
 
   return sanitizedMarkdown;
 }

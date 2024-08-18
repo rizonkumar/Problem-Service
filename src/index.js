@@ -32,17 +32,12 @@ app.use(errorHandler);
 async function startServer() {
   try {
     await connectToDB();
-    console.log("Successfully connected to DB");
 
-    const server = app.listen(PORT, () => {
-      console.log(`Server started at PORT: ${PORT}`);
-    });
+    const server = app.listen(PORT, () => {});
 
     // Graceful shutdown
     process.on("SIGTERM", () => {
-      console.log("SIGTERM signal received: closing HTTP server");
       server.close(() => {
-        console.log("HTTP server closed");
         process.exit(0);
       });
     });
